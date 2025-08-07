@@ -5,6 +5,7 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:         # <-- Dòng này cho phép chạy thủ công!
 
 env:
   # Path to the solution file relative to the root of the project.
