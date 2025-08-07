@@ -1,4 +1,4 @@
-# gotiengmede
+# GTMD
 Gõ tiếng mẹ đẻ cho Windows
 
 ## Tính năng
