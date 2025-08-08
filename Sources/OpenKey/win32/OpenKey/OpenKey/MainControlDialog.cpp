@@ -1,8 +1,8 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 #include "MainControlDialog.h"
 #include "AppDelegate.h"
@@ -29,12 +29,12 @@ void MainControlDialog::initDialog() {
     TCHAR title[256];
     TCHAR titleBuffer[256];
     LoadString(hIns, IDS_MAIN_DIALOG_TITLE, title, 256);
-    wsprintfW(titleBuffer, title, vie-typeHelper::getVersionString().c_str());
+    wsprintfW(titleBuffer, title, vietypekeyHelper::getVersionString().c_str());
     SetWindowText(hDlg, titleBuffer);
 
     //input type
     comboBoxInputType = GetDlgItem(hDlg, IDC_COMBO_INPUT_TYPE);
-    vector<LPCTSTR>& inputType = vie-typeManager::getInputType();
+    vector<LPCTSTR>& inputType = vietypekeyManager::getInputType();
     for (int i = 0; i < inputType.size(); i++) {
         SendMessage(comboBoxInputType, CB_ADDSTRING, i, reinterpret_cast<LPARAM>(inputType[i]));
     }
@@ -42,7 +42,7 @@ void MainControlDialog::initDialog() {
 
     //code table
     comboBoxTableCode = GetDlgItem(hDlg, IDC_COMBO_TABLE_CODE);
-    vector<LPCTSTR>& tableCode = vie-typeManager::getTableCode();
+    vector<LPCTSTR>& tableCode = vietypekeyManager::getTableCode();
     for (int i = 0; i < tableCode.size(); i++) {
         SendMessage(comboBoxTableCode, CB_ADDSTRING, i, reinterpret_cast<LPARAM>(tableCode[i]));
     }
@@ -137,8 +137,8 @@ void MainControlDialog::initDialog() {
     checkAllowOtherLanguages = GetDlgItem(hTabPage1, IDC_CHECK_OTHER_LANGUAGES);
     createToolTip(checkAllowOtherLanguages, IDS_STRING_OTHER_LANGUAGES);
 
-    checkTempOffvie-type = GetDlgItem(hTabPage1, IDC_CHECK_TEMP_OFF_OPEN_KEY);
-    createToolTip(checkTempOffvie-type, IDS_STRING_TEMP_OFF_vie-type);
+    checkTempOffvietypekey = GetDlgItem(hTabPage1, IDC_CHECK_TEMP_OFF_OPEN_KEY);
+    createToolTip(checkTempOffvietypekey, IDS_STRING_TEMP_OFF_vietypekey);
 
     /*------------end tab 1----------------*/
 
@@ -212,13 +212,13 @@ INT_PTR MainControlDialog::eventProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
             AppDelegate::getInstance()->closeDialog(this);
             break;
         case IDBUTTON_EXIT:
-            AppDelegate::getInstance()->onvie-typeExit();
+            AppDelegate::getInstance()->onvietypekeyExit();
             break;
         case ID_BTN_DEFAULT: {
             int msgboxID = MessageBox(
                 hDlg,
                 _T("Bạn có chắc chắn muốn thiết lập lại cài đặt gốc?"),
-                _T("vie-type"),
+                _T("vietypekey"),
                 MB_ICONEXCLAMATION | MB_YESNO
             );
             if (msgboxID == IDYES) {
@@ -233,7 +233,7 @@ INT_PTR MainControlDialog::eventProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
             onUpdateButton();
             break;
         case IDC_BUTTON_GO_SOURCE_CODE:
-            ShellExecute(NULL, _T("open"), _T("https://github.com/tuyenvm/vie-type"), NULL, NULL, SW_SHOWNORMAL);
+            ShellExecute(NULL, _T("open"), _T("https://github.com/tuyenvm/vietypekey"), NULL, NULL, SW_SHOWNORMAL);
             break;
         default:
             if (HIWORD(wParam) == CBN_SELCHANGE) {
@@ -243,9 +243,9 @@ INT_PTR MainControlDialog::eventProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
                 this->onCheckboxClicked((HWND)lParam);
             }
             else if (HIWORD(wParam) == EN_CHANGE) {
-                _lastKeyCode = vie-typeManager::_lastKeyCode;
+                _lastKeyCode = vietypekeyManager::_lastKeyCode;
                 if (_lastKeyCode > 0) {
-                    vie-typeManager::_lastKeyCode = 0;
+                    vietypekeyManager::_lastKeyCode = 0;
                     this->onCharacter((HWND)lParam, _lastKeyCode);
                 }
             }
@@ -264,7 +264,7 @@ INT_PTR MainControlDialog::eventProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
             if (link->hdr.idFrom == IDC_SYSLINK_HOME_PAGE)
                 ShellExecute(NULL, _T("open"), _T("http://open-key.org"), NULL, NULL, SW_SHOWNORMAL);
             else if (link->hdr.idFrom == IDC_SYSLINK_FANPAGE)
-                ShellExecute(NULL, _T("open"), _T("https://www.facebook.com/vie-typeVN"), NULL, NULL, SW_SHOWNORMAL);
+                ShellExecute(NULL, _T("open"), _T("https://www.facebook.com/vietypekeyVN"), NULL, NULL, SW_SHOWNORMAL);
             else if (link->hdr.idFrom == IDC_SYSLINK_AUTHOR_EMAIL)
                 ShellExecute(NULL, _T("open"), _T("mailto:maivutuyen.91@gmail.com"), NULL, NULL, SW_SHOWNORMAL);
             break;
@@ -343,7 +343,7 @@ void MainControlDialog::fillData() {
     SendMessage(checkQuickEndConsonant, BM_SETCHECK, vQuickEndConsonant ? 1 : 0, 0);
     SendMessage(checkRememberTableCode, BM_SETCHECK, vRememberCode ? 1 : 0, 0);
     SendMessage(checkAllowOtherLanguages, BM_SETCHECK, vOtherLanguage ? 1 : 0, 0);
-    SendMessage(checkTempOffvie-type, BM_SETCHECK, vTempOffvie-type ? 1 : 0, 0);
+    SendMessage(checkTempOffvietypekey, BM_SETCHECK, vTempOffvietypekey ? 1 : 0, 0);
 
     SendMessage(checkSmartSwitchKey, BM_SETCHECK, vUseSmartSwitchKey ? 1 : 0, 0);
     SendMessage(checkCapsFirstChar, BM_SETCHECK, vUpperCaseFirstChar ? 1 : 0, 0);
@@ -366,7 +366,7 @@ void MainControlDialog::fillData() {
 
     //tab info
     wchar_t buffer[256];
-    wsprintfW(buffer, _T("Phiên bản %s cho Windows - Ngày cập nhật: %s"), vie-typeHelper::getVersionString().c_str(), _T(__DATE__));
+    wsprintfW(buffer, _T("Phiên bản %s cho Windows - Ngày cập nhật: %s"), vietypekeyHelper::getVersionString().c_str(), _T(__DATE__));
     SendDlgItemMessage(hTabPage4, IDC_STATIC_APP_VERSION_INFO, WM_SETTEXT, 0, LPARAM(buffer));
 }
 
@@ -385,7 +385,7 @@ void MainControlDialog::onComboBoxSelected(const HWND& hCombobox, const int& com
     else if (hCombobox == comboBoxTableCode) {
         APP_SET_DATA(vCodeTable, (int)SendMessage(hCombobox, CB_GETCURSEL, 0, 0));
         if (vRememberCode) {
-            setAppInputMethodStatus(vie-typeHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
+            setAppInputMethodStatus(vietypekeyHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
             saveSmartSwitchKeyData();
         }
     }
@@ -428,7 +428,7 @@ void MainControlDialog::onCheckboxClicked(const HWND& hWnd) {
         val = (int)SendMessage(checkVietnamese, BM_GETCHECK, 0, 0);
         APP_SET_DATA(vLanguage, val ? 1 : 0);
         if (vUseSmartSwitchKey) {
-            setAppInputMethodStatus(vie-typeHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
+            setAppInputMethodStatus(vietypekeyHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
             saveSmartSwitchKeyData();
         }
     }
@@ -436,7 +436,7 @@ void MainControlDialog::onCheckboxClicked(const HWND& hWnd) {
         val = (int)SendMessage(checkVietnamese, BM_GETCHECK, 0, 0);
         APP_SET_DATA(vLanguage, val ? 1 : 0);
         if (vUseSmartSwitchKey) {
-            setAppInputMethodStatus(vie-typeHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
+            setAppInputMethodStatus(vietypekeyHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
             saveSmartSwitchKeyData();
         }
     }
@@ -456,7 +456,7 @@ void MainControlDialog::onCheckboxClicked(const HWND& hWnd) {
     else if (hWnd == checkRunWithWindows) {
         val = (int)SendMessage(hWnd, BM_GETCHECK, 0, 0);
         APP_SET_DATA(vRunWithWindows, val ? 1 : 0);
-        vie-typeHelper::registerRunOnStartup(vRunWithWindows);
+        vietypekeyHelper::registerRunOnStartup(vRunWithWindows);
     }
     else if (hWnd == checkSpelling) {
         val = (int)SendMessage(hWnd, BM_GETCHECK, 0, 0);
@@ -527,7 +527,7 @@ void MainControlDialog::onCheckboxClicked(const HWND& hWnd) {
         APP_SET_DATA(vCreateDesktopShortcut, val ? 1 : 0);
         //create desktop shortcut
         if (val)
-            vie-typeManager::createDesktopShortcut();
+            vietypekeyManager::createDesktopShortcut();
     }
     else if (hWnd == checkRunAsAdmin) {
         val = (int)SendMessage(hWnd, BM_GETCHECK, 0, 0);
@@ -546,9 +546,9 @@ void MainControlDialog::onCheckboxClicked(const HWND& hWnd) {
         val = (int)SendMessage(hWnd, BM_GETCHECK, 0, 0);
         APP_SET_DATA(vOtherLanguage, val ? 1 : 0);
     }
-    else if (hWnd == checkTempOffvie-type) {
+    else if (hWnd == checkTempOffvietypekey) {
         val = (int)SendMessage(hWnd, BM_GETCHECK, 0, 0);
-        APP_SET_DATA(vTempOffvie-type, val ? 1 : 0);
+        APP_SET_DATA(vTempOffvietypekey, val ? 1 : 0);
     }
     else if (hWnd == checkFixChromium) {
         val = (int)SendMessage(hWnd, BM_GETCHECK, 0, 0);
@@ -596,50 +596,50 @@ void MainControlDialog::onTabIndexChanged() {
 void MainControlDialog::onUpdateButton() {
     EnableWindow(hUpdateButton, false);
     string newVersion;
-    if (vie-typeManager::checkUpdate(newVersion)) {
+    if (vietypekeyManager::checkUpdate(newVersion)) {
         WCHAR msg[256];
         wsprintf(msg,
-            TEXT("vie-type Có phiên bản mới (%s), bạn có muốn cập nhật không?"),
+            TEXT("vietypekey Có phiên bản mới (%s), bạn có muốn cập nhật không?"),
             utf8ToWideString(newVersion).c_str());
 
         int msgboxID = MessageBox(
             hDlg,
             msg,
-            _T("vie-type Update"),
+            _T("vietypekey Update"),
             MB_ICONEXCLAMATION | MB_YESNO
         );
         if (msgboxID == IDYES) {
-            //Call vie-typeUpdate
+            //Call vietypekeyUpdate
             WCHAR path[MAX_PATH];
             GetCurrentDirectory(MAX_PATH, path);
-            wsprintf(path, TEXT("%s\\vie-typeUpdate.exe"), path);
+            wsprintf(path, TEXT("%s\\vietypekeyUpdate.exe"), path);
             ShellExecute(0, L"", path, 0, 0, SW_SHOWNORMAL);
 
-            AppDelegate::getInstance()->onvie-typeExit();
+            AppDelegate::getInstance()->onvietypekeyExit();
         }
 
     }
     else {
-        MessageBox(hDlg, _T("Bạn đang dùng phiên bản mới nhất!"), _T("vie-type Update"), MB_OK);
+        MessageBox(hDlg, _T("Bạn đang dùng phiên bản mới nhất!"), _T("vietypekey Update"), MB_OK);
     }
     EnableWindow(hUpdateButton, true);
 }
 
 void MainControlDialog::requestRestartAsAdmin() {
-    vie-typeHelper::registerRunOnStartup(false);
+    vietypekeyHelper::registerRunOnStartup(false);
     if (vRunAsAdmin && !IsUserAnAdmin()) {
         int msgboxID = MessageBox(
             hDlg,
-            _T("Bạn cần phải khởi động lại vie-type để kích hoạt chế độ Admin!\nBạn có muốn khởi động lại vie-type không?"),
-            _T("vie-type"),
+            _T("Bạn cần phải khởi động lại vietypekey để kích hoạt chế độ Admin!\nBạn có muốn khởi động lại vietypekey không?"),
+            _T("vietypekey"),
             MB_ICONEXCLAMATION | MB_YESNO
         );
         if (msgboxID == IDYES) {
             PostQuitMessage(0);
-            ShellExecute(0, L"runas", vie-typeHelper::getFullPath().c_str(), 0, 0, SW_SHOWNORMAL);
+            ShellExecute(0, L"runas", vietypekeyHelper::getFullPath().c_str(), 0, 0, SW_SHOWNORMAL);
         }
     }
     else {
-        vie-typeHelper::registerRunOnStartup(vRunWithWindows);
+        vietypekeyHelper::registerRunOnStartup(vRunWithWindows);
     }
 }
