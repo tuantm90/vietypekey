@@ -1,8 +1,8 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 #include "ConvertToolDialog.h"
 #include "stdafx.h"
@@ -45,9 +45,9 @@ INT_PTR ConvertToolDialog::eventProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 				this->onCheckboxClicked((HWND)lParam);
 			}
 			else if (HIWORD(wParam) == EN_CHANGE) {
-				_lastKeyCode = vie-typeManager::_lastKeyCode;
+				_lastKeyCode = vietypekeyManager::_lastKeyCode;
 				if (_lastKeyCode > 0) {
-					vie-typeManager::_lastKeyCode = 0;
+					vietypekeyManager::_lastKeyCode = 0;
 					this->onCharacter((HWND)lParam, _lastKeyCode);
 				}
 			}
@@ -67,7 +67,7 @@ void ConvertToolDialog::initDialog() {
 	comboboxSource = GetDlgItem(hDlg, IDC_COMBO_TABLE_CODE_SRC);
 	comboboxDest = GetDlgItem(hDlg, IDC_COMBO_TABLE_CODE_DST);
 
-	vector<LPCTSTR>& tableCode = vie-typeManager::getTableCode();
+	vector<LPCTSTR>& tableCode = vietypekeyManager::getTableCode();
 	for (int i = 0; i < tableCode.size(); i++) {
 		SendMessage(comboboxSource, CB_ADDSTRING, i, reinterpret_cast<LPARAM>(tableCode[i]));
 		SendMessage(comboboxDest, CB_ADDSTRING, i, reinterpret_cast<LPARAM>(tableCode[i]));
@@ -229,12 +229,12 @@ void ConvertToolDialog::onSwitchButton() {
 }
 
 void ConvertToolDialog::onConvertButton() {
-	if (vie-typeHelper::quickConvert()) {
+	if (vietypekeyHelper::quickConvert()) {
 		//alert when complete
 		if (!convertToolDontAlertWhenCompleted) {
 			TCHAR msg[256];
 			LoadString(hInstance, IDS_STRING_CONVERT_COMPLETED, msg, 256);
-			MessageBox(this->hDlg, msg, _T("vie-type"), MB_OK);
+			MessageBox(this->hDlg, msg, _T("vietypekey"), MB_OK);
 		}
 	}
 }
