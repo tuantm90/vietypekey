@@ -1,8 +1,8 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 
 // stdafx.h : include file for standard system include files,
@@ -35,8 +35,8 @@ Github: hhttps://github.com/tuantm90/vie-type
 
 #include "../../../engine/Engine.h"
 
-#include "vie-typeManager.h"
-#include "vie-typeHelper.h"
+#include "vietypekeyManager.h"
+#include "vietypekeyHelper.h"
 #include "SystemTrayHelper.h"
 
 using namespace std;
@@ -45,10 +45,10 @@ extern wchar_t _logBuffer[1024];
 #define LOG(...)  wsprintfW(_logBuffer, __VA_ARGS__); \
 					OutputDebugString(_logBuffer);
 
-#define APP_SET_DATA(KEY, VAL) KEY = VAL; vie-typeHelper::setRegInt(_T(#KEY), KEY)
-#define APP_GET_DATA(KEY, DEFAULT_VAL) KEY = vie-typeHelper::getRegInt(_T(#KEY), DEFAULT_VAL)
+#define APP_SET_DATA(KEY, VAL) KEY = VAL; vietypekeyHelper::setRegInt(_T(#KEY), KEY)
+#define APP_GET_DATA(KEY, DEFAULT_VAL) KEY = vietypekeyHelper::getRegInt(_T(#KEY), DEFAULT_VAL)
 
-#define APP_CLASS _T("vie-typeVietnameseInputMethod")
+#define APP_CLASS _T("vietypekeyVietnameseInputMethod")
 
 extern void saveSmartSwitchKeyData();
 
@@ -77,5 +77,5 @@ extern int vRunAsAdmin;
 extern int vCheckNewVersion;
 extern int vRememberCode;
 extern int vOtherLanguage;
-extern int vTempOffvie-type;
+extern int vTempOffvietypekey;
 extern int vFixChromiumBrowser;
