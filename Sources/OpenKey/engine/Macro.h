@@ -1,9 +1,9 @@
 //
 //  Macro.h
-//  OpenKey
+//  vietypekey
 //
-//  Created by Tuyen on 8/4/19.
-//  Copyright © 2019 Tuyen Mai. All rights reserved.
+//  Created by T.
+//  Copyright © 2025 T. All rights reserved.
 //
 
 #ifndef Macro_h
