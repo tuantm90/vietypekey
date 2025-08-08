@@ -1,9 +1,9 @@
 //
 //  Engine.h
-//  OpenKey
+//  vietypekey
 //
-//  Created by Tuyen on 1/18/19.
-//  Copyright © 2019 Tuyen Mai. All rights reserved.
+//  Created by T.
+//  Copyright © 2025 T. All rights reserved.
 //
 
 #ifndef Engine_h
@@ -183,9 +183,9 @@ extern int vOtherLanguage;
 
 /**
  * 0: No; 1: Yes
- * Temporarily turn off OpenKey  by hot key (Command on mac, Alt on Windows and Linux)
+ * Temporarily turn off   by hot key (Command on mac, Alt on Windows and Linux)
  */
-extern int vTempOffOpenKey;
+extern int vTempOffvietypekey;
 
 /**
  * Call this function first to receive data pointer
@@ -232,7 +232,7 @@ void vTempOffSpellChecking();
 void vSetCheckSpelling();
 
 /**
- * temporarily turn off OpenKey engine
+ * temporarily turn off vietypekey engine
  */
 void vTempOffEngine(const bool& off=true);
 
