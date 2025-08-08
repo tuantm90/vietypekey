@@ -1,19 +1,19 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 #pragma once
 #include "stdafx.h"
 
 extern int CF_RTF;
 extern int CF_HTML;
-extern int CF_vie-type;
+extern int CF_vietypekey;
 
-class vie-typeHelper {
+class vietypekeyHelper {
 private:
-	static void vie-type();
+	static void vietypekey();
 public:
 	static void setRegInt(LPCTSTR key, const int& val);
 	static int getRegInt(LPCTSTR key, const int& defaultValue);
