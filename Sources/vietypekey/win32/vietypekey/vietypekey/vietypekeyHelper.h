@@ -9,11 +9,11 @@ Github: hhttps://github.com/tuantm90/vietypekey
 
 extern int CF_RTF;
 extern int CF_HTML;
-extern int CF_OPENKEY;
+extern int CF_VIETYPEKEY;
 
-class OpenKeyHelper {
+class vietypekeyHelper {
 private:
-	static void openKey();
+	static void vietypekey();
 public:
 	static void setRegInt(LPCTSTR key, const int& val);
 	static int getRegInt(LPCTSTR key, const int& defaultValue);
