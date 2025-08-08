@@ -1,17 +1,10 @@
-﻿/*----------------------------------------------------------
-OpenKey - The Cross platform Open source Vietnamese Keyboard application.
+/*----------------------------------------------------------
+Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
 
-Copyright (C) 2019 Mai Vu Tuyen
-Contact: maivutuyen.91@gmail.com
-Github: https://github.com/tuyenvm/OpenKey
-Fanpage: https://www.facebook.com/OpenKeyVN
-
-This file is belong to the OpenKey project, Win32 version
-which is released under GPL license.
-You can fork, modify, improve this program. If you
-redistribute your new version, it MUST be open source.
+Copyright (C) 2025 tuantm90
+Github: hhttps://github.com/tuantm90/vie-type
 -----------------------------------------------------------*/
-#include "OpenKeyManager.h"
+#include "vie-typeManager.h"
 #include <shlobj.h>
 
 static vector<LPCTSTR> _inputType = {
@@ -30,29 +23,29 @@ static vector<LPCTSTR> _tableCode = {
 
 /*-----------------------------------------------------------------------*/
 
-extern void OpenKeyInit();
-extern void OpenKeyFree();
+extern void vie-typeInit();
+extern void vie-typeFree();
 
-unsigned short  OpenKeyManager::_lastKeyCode = 0;
+unsigned short  vie-typeManager::_lastKeyCode = 0;
 
-vector<LPCTSTR>& OpenKeyManager::getInputType() {
+vector<LPCTSTR>& vie-typeManager::getInputType() {
 	return _inputType;
 }
 
-vector<LPCTSTR>& OpenKeyManager::getTableCode() {
+vector<LPCTSTR>& vie-typeManager::getTableCode() {
 	return _tableCode;
 }
 
-void OpenKeyManager::initEngine() {
-	OpenKeyInit();
+void vie-typeManager::initEngine() {
+	vie-typeInit();
 }
 
-void OpenKeyManager::freeEngine() {
-	OpenKeyFree();
+void vie-typeManager::freeEngine() {
+	vie-typeFree();
 }
 
-bool OpenKeyManager::checkUpdate(string& newVersion) {
-	wstring dataW = OpenKeyHelper::getContentOfUrl(L"https://raw.githubusercontent.com/tuyenvm/OpenKey/master/version.json");
+bool vie-typeManager::checkUpdate(string& newVersion) {
+	wstring dataW = vie-typeHelper::getContentOfUrl(L"https://raw.githubusercontent.com/tuyenvm/vie-type/master/version.json");
 	string data = wideStringToUtf8(dataW);
 
 	//simple parse
@@ -94,22 +87,22 @@ bool OpenKeyManager::checkUpdate(string& newVersion) {
 	DWORD newVersionCode = (DWORD)atoi(newVersionCodeStr.data());
 	newVersionCode = shiftVersion(newVersionCode);
 
-	DWORD currentVersionCode = OpenKeyHelper::getVersionNumber();
+	DWORD currentVersionCode = vie-typeHelper::getVersionNumber();
 	currentVersionCode = shiftVersion(currentVersionCode);
 
 	return newVersionCode > currentVersionCode;
 }
 
-void OpenKeyManager::createDesktopShortcut() {
+void vie-typeManager::createDesktopShortcut() {
 	CoInitialize(NULL);
 	IShellLink* pShellLink = NULL;
 	HRESULT hres;
 	hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_ALL,
 							IID_IShellLink, (void**)&pShellLink);
 	if (SUCCEEDED(hres)) {
-		wstring path = OpenKeyHelper::getFullPath();
+		wstring path = vie-typeHelper::getFullPath();
 		pShellLink->SetPath(path.c_str());
-		pShellLink->SetDescription(_T("OpenKey - Bộ gõ Tiếng Việt"));
+		pShellLink->SetDescription(_T("vie-type - Bộ gõ Tiếng Việt"));
 		pShellLink->SetIconLocation(path.c_str(), 0);
 
 		IPersistFile* pPersistFile;
@@ -119,7 +112,7 @@ void OpenKeyManager::createDesktopShortcut() {
 			wchar_t desktopPath[MAX_PATH + 1];
 			wchar_t savePath[MAX_PATH + 10];
 			SHGetFolderPath(NULL, CSIDL_DESKTOP, NULL, 0, desktopPath);
-			wsprintf(savePath, _T("%s\\OpenKey.lnk"), desktopPath);
+			wsprintf(savePath, _T("%s\\vie-type.lnk"), desktopPath);
 			hres = pPersistFile->Save(savePath, TRUE);
 			pPersistFile->Release();
 			pShellLink->Release();
