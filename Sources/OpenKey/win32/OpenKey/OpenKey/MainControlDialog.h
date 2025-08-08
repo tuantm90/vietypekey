@@ -1,15 +1,8 @@
 /*----------------------------------------------------------
-OpenKey - The Cross platform Open source Vietnamese Keyboard application.
+Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
 
-Copyright (C) 2019 Mai Vu Tuyen
-Contact: maivutuyen.91@gmail.com
-Github: https://github.com/tuyenvm/OpenKey
-Fanpage: https://www.facebook.com/OpenKeyVN
-
-This file is belong to the OpenKey project, Win32 version
-which is released under GPL license.
-You can fork, modify, improve this program. If you
-redistribute your new version, it MUST be open source.
+Copyright (C) 2025 tuantm90
+Github: hhttps://github.com/tuantm90/vie-type
 -----------------------------------------------------------*/
 #pragma once
 #include "BaseDialog.h"
@@ -26,7 +19,7 @@ private:
 		checkAllowZWJF, checkTempOffSpelling, checkQuickStartConsonant, checkQuickEndConsonant;
 	HWND checkSmartSwitchKey, checkCapsFirstChar, checkQuickTelex, checkUseMacro, checkUseMacroInEnglish;
 	HWND checkCreateDesktopShortcut, checkCheckNewVersion, checkRunAsAdmin, checkSupportMetroApp, checkMacroAutoCaps;
-	HWND checkFixChromium, checkRememberTableCode, checkTempOffOpenKey, checkAllowOtherLanguages;
+	HWND checkFixChromium, checkRememberTableCode, checkTempOffvie-type, checkAllowOtherLanguages;
 	HWND hUpdateButton;
 private:
 	void initDialog();
