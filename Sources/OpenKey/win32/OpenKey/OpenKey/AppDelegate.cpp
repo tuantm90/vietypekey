@@ -1,8 +1,8 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 #include "AppDelegate.h"
 
@@ -32,7 +32,7 @@ int vQuickStartConsonant = 0;
 int vQuickEndConsonant = 0;
 int vOtherLanguage = 1;
 int vRememberCode = 1;
-int vTempOffvie-type = 0;
+int vTempOffvietypekey = 0;
 
 int vUseGrayIcon = 0;
 int vShowOnStartUp = 0;
@@ -54,25 +54,25 @@ bool AppDelegate::isDialogMsg(MSG & msg) const {
 
 void AppDelegate::checkUpdate() {
 	string newVersion;
-	if (vie-typeManager::checkUpdate(newVersion)) {
+	if (vietypekeyManager::checkUpdate(newVersion)) {
 		WCHAR msg[256];
 		wsprintf(msg,
-			TEXT("vie-type Có phiên bản mới (%s), bạn có muốn cập nhật không?"),
+			TEXT("vietypekey Có phiên bản mới (%s), bạn có muốn cập nhật không?"),
 			utf8ToWideString(newVersion).c_str());
 
 		int msgboxID = MessageBox(
 			0,
 			msg,
-			_T("vie-type Update"),
+			_T("vietypekey Update"),
 			MB_ICONEXCLAMATION | MB_YESNO
 		);
 		if (msgboxID == IDYES) {
-			//Call vie-typeUpdate
+			//Call vietypekeyUpdate
 			WCHAR path[MAX_PATH];
 			GetCurrentDirectory(MAX_PATH, path);
-			wsprintf(path, TEXT("%s\\vie-typeUpdate.exe"), path);
+			wsprintf(path, TEXT("%s\\vietypekeyUpdate.exe"), path);
 			ShellExecute(0, L"", path, 0, 0, SW_SHOWNORMAL);
-			AppDelegate::getInstance()->onvie-typeExit();
+			AppDelegate::getInstance()->onvietypekeyExit();
 		}
 
 	}
@@ -98,8 +98,8 @@ int AppDelegate::run(HINSTANCE hInstance) {
 		return 0;
 	}
 
-	//init vie-type Engine
-	vie-typeManager::initEngine();
+	//init vietypekey Engine
+	vietypekeyManager::initEngine();
 
 	//create system tray
 	SystemTrayHelper::createSystemTrayIcon(hInstance);
@@ -118,7 +118,7 @@ int AppDelegate::run(HINSTANCE hInstance) {
 	// Main message loop:
 	while (GetMessage(&msg, nullptr, 0, 0))	{
 		if (msg.message == WM_KEYDOWN) {
-			vie-typeManager::_lastKeyCode = (UINT16)msg.wParam;
+			vietypekeyManager::_lastKeyCode = (UINT16)msg.wParam;
 		}
 		if (!isDialogMsg(msg)) {
 			TranslateMessage(&msg);
@@ -188,7 +188,7 @@ void AppDelegate::onDefaultConfig() {
 	APP_SET_DATA(vSupportMetroApp, 1);
 	APP_SET_DATA(vRememberCode, 1);
 	APP_SET_DATA(vOtherLanguage, 1);
-	APP_SET_DATA(vTempOffvie-type, 0);
+	APP_SET_DATA(vTempOffvietypekey, 0);
 	APP_SET_DATA(vFixChromiumBrowser, 0);
 
 	if (mainDialog) {
@@ -204,7 +204,7 @@ void AppDelegate::onToggleVietnamese() {
 	}
 	
 	if (vUseSmartSwitchKey) {
-		string& exe = vie-typeHelper::getLastAppExecuteName();
+		string& exe = vietypekeyHelper::getLastAppExecuteName();
 		setAppInputMethodStatus(exe, vLanguage | (vCodeTable << 1));
 		saveSmartSwitchKeyData();
 	}
@@ -251,12 +251,12 @@ void AppDelegate::onConvertTool() {
 }
 
 void AppDelegate::onQuickConvert() {
-	if (vie-typeHelper::quickConvert()) {
+	if (vietypekeyHelper::quickConvert()) {
 		//alert when complete
 		if (!convertToolDontAlertWhenCompleted) {
 			TCHAR msg[256];
 			LoadString(hInstance, IDS_STRING_CONVERT_COMPLETED, msg, 256);
-			MessageBox(NULL, msg, _T("vie-type"), MB_OK);
+			MessageBox(NULL, msg, _T("vietypekey"), MB_OK);
 		}
 	}
 }
@@ -274,7 +274,7 @@ void AppDelegate::onTableCode(const int & code) {
 		mainDialog->fillData();
 	}
 	if (vRememberCode) {
-		setAppInputMethodStatus(vie-typeHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
+		setAppInputMethodStatus(vietypekeyHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
 		saveSmartSwitchKeyData();
 	}
 }
@@ -283,7 +283,7 @@ void AppDelegate::onControlPanel() {
 	createMainDialog();
 }
 
-void AppDelegate::onvie-typeAbout() {
+void AppDelegate::onvietypekeyAbout() {
 	if (aboutDialog == NULL) {
 		aboutDialog = new AboutDialog(hInstance, IDD_ABOUTBOX);
 		aboutDialog->show();
@@ -292,8 +292,8 @@ void AppDelegate::onvie-typeAbout() {
 	}
 }
 
-void AppDelegate::onvie-typeExit() {
-	vie-typeManager::freeEngine();
+void AppDelegate::onvietypekeyExit() {
+	vietypekeyManager::freeEngine();
 	SystemTrayHelper::removeSystemTray();
 	PostQuitMessage(0);
 }
