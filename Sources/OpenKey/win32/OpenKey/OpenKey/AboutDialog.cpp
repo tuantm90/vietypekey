@@ -38,11 +38,9 @@ INT_PTR AboutDialog::eventProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		case NM_RETURN: {
 			PNMLINK link = (PNMLINK)lParam;
 			if (link->hdr.idFrom == IDC_SYSLINK_HOME_PAGE)
-				ShellExecute(NULL, _T("open"), _T("https://github.com/tuyenvm/OpenKey"), NULL, NULL, SW_SHOWNORMAL);
+				ShellExecute(NULL, _T("open"), _T("https://github.com/tuantm90/vie-type"), NULL, NULL, SW_SHOWNORMAL);
 			else if (link->hdr.idFrom == IDC_SYSLINK_NEW_VERSION)
-				ShellExecute(NULL, _T("open"), _T("https://github.com/tuyenvm/OpenKey/releases"), NULL, NULL, SW_SHOWNORMAL);
-			else if (link->hdr.idFrom == IDC_SYSLINK_FANPAGE)
-				ShellExecute(NULL, _T("open"), _T("https://www.facebook.com/OpenKeyVN"), NULL, NULL, SW_SHOWNORMAL);
+				ShellExecute(NULL, _T("open"), _T("https://github.com/tuantm90/vie-type/releases"), NULL, NULL, SW_SHOWNORMAL);
 		}
 		break;
 		}
@@ -62,7 +60,7 @@ void AboutDialog::initDialog() {
 	SendDlgItemMessage(hDlg, IDC_STATIC_APP_TITLE, WM_SETFONT, WPARAM(hFont), TRUE);
 
 	wchar_t buffer[256];
-	wsprintfW(buffer, _T("Phiên bản %s cho Windows - Ngày cập nhật: %s"), OpenKeyHelper::getVersionString().c_str(), _T(__DATE__));
+	wsprintfW(buffer, _T("Phiên bản %s cho Windows - Ngày cập nhật: %s"), vie-typeHelper::getVersionString().c_str(), _T(__DATE__));
 	SendDlgItemMessage(hDlg, IDC_STATIC_APP_VERSION, WM_SETTEXT, 0, LPARAM(buffer));
 
 	hFont = CreateFont(20, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE,
@@ -74,30 +72,30 @@ void AboutDialog::initDialog() {
 void AboutDialog::onUpdateButton() {
 	EnableWindow(hUpdateButton, false);
 	string newVersion;
-	if (OpenKeyManager::checkUpdate(newVersion)) {
+	if (vie-typeManager::checkUpdate(newVersion)) {
 		WCHAR msg[256];
 		wsprintf(msg, 
-			TEXT("OpenKey Có phiên bản mới (%s), bạn có muốn cập nhật không?"),
+			TEXT("vie-type Có phiên bản mới (%s), bạn có muốn cập nhật không?"),
 			utf8ToWideString(newVersion).c_str());
 
 		int msgboxID = MessageBox(
 			hDlg,
 			msg,
-			_T("OpenKey Update"),
+			_T("vie-type Update"),
 			MB_ICONEXCLAMATION | MB_YESNO
 		);
 		if (msgboxID == IDYES) {
-			//Call OpenKeyUpdate
+			//Call vie-typeUpdate
 			WCHAR path[MAX_PATH];
 			GetCurrentDirectory(MAX_PATH, path);
-			wsprintf(path, TEXT("%s\\OpenKeyUpdate.exe"), path);
+			wsprintf(path, TEXT("%s\\vie-typeUpdate.exe"), path);
 			ShellExecute(0, L"", path, 0, 0, SW_SHOWNORMAL);
 
-			AppDelegate::getInstance()->onOpenKeyExit();
+			AppDelegate::getInstance()->onvie-typeExit();
 		}
 		
 	} else {
-		MessageBox(hDlg, _T("Bạn đang dùng phiên bản mới nhất!"), _T("OpenKey Update"), MB_OK);
+		MessageBox(hDlg, _T("Bạn đang dùng phiên bản mới nhất!"), _T("vie-type Update"), MB_OK);
 	}
 	EnableWindow(hUpdateButton, true);
 }
