@@ -1,17 +1,10 @@
 /*----------------------------------------------------------
-OpenKey - The Cross platform Open source Vietnamese Keyboard application.
+Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
 
-Copyright (C) 2019 Mai Vu Tuyen
-Contact: maivutuyen.91@gmail.com
-Github: https://github.com/tuyenvm/OpenKey
-Fanpage: https://www.facebook.com/OpenKeyVN
-
-This file is belong to the OpenKey project, Win32 version
-which is released under GPL license.
-You can fork, modify, improve this program. If you
-redistribute your new version, it MUST be open source.
+Copyright (C) 2025 tuantm90
+Github: hhttps://github.com/tuantm90/vie-type
 -----------------------------------------------------------*/
-#include "OpenKeyHelper.h"
+#include "vie-typeHelper.h"
 #include <stdarg.h>
 #include <Urlmon.h>
 #include <fstream>
@@ -22,7 +15,7 @@ redistribute your new version, it MUST be open source.
 
 static BYTE* _regData = 0;
 
-static LPCTSTR sk = TEXT("SOFTWARE\\TuyenMai\\OpenKey");
+static LPCTSTR sk = TEXT("SOFTWARE\\TuyenMai\\vie-type");
 static HKEY hKey;
 static LPCTSTR _runOnStartupKeyPath = _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
 static TCHAR _executePath[MAX_PATH];
@@ -33,15 +26,15 @@ static HWND _tempWnd;
 static TCHAR _exePath[1024] = { 0 };
 static LPCTSTR _exeName = _exePath;
 static HANDLE _proc;
-static string _exeNameUtf8 = "TheOpenKeyProject";
+static string _exeNameUtf8 = "Thevie-typeProject";
 static string _unknownProgram = "UnknownProgram";
 
 int CF_RTF = RegisterClipboardFormat(_T("Rich Text Format"));
 int CF_HTML = RegisterClipboardFormat(_T("HTML Format"));
-int CF_OPENKEY = RegisterClipboardFormat(_T("OpenKey Format"));
+int CF_vie-type = RegisterClipboardFormat(_T("vie-type Format"));
 
-void OpenKeyHelper::openKey() {
-	LONG nError = RegOpenKeyEx(HKEY_CURRENT_USER, sk, NULL, KEY_ALL_ACCESS, &hKey);
+void vie-typeHelper::vie-type() {
+	LONG nError = Regvie-typeEx(HKEY_CURRENT_USER, sk, NULL, KEY_ALL_ACCESS, &hKey);
 	if (nError == ERROR_FILE_NOT_FOUND) 	{
 		nError = RegCreateKeyEx(HKEY_CURRENT_USER, sk, NULL, NULL, REG_OPTION_NON_VOLATILE, KEY_CREATE_SUB_KEY, NULL, &hKey, NULL);
 	}
@@ -50,14 +43,14 @@ void OpenKeyHelper::openKey() {
 	}
 }
 
-void OpenKeyHelper::setRegInt(LPCTSTR key, const int & val) {
-	openKey();
+void vie-typeHelper::setRegInt(LPCTSTR key, const int & val) {
+	vie-type();
 	RegSetValueEx(hKey, key, 0, REG_DWORD, (LPBYTE)&val, sizeof(val));
 	RegCloseKey(hKey);
 }
 
-int OpenKeyHelper::getRegInt(LPCTSTR key, const int & defaultValue) {
-	openKey();
+int vie-typeHelper::getRegInt(LPCTSTR key, const int & defaultValue) {
+	vie-type();
 	int val = defaultValue;
 	DWORD size = sizeof(val);
 	if (ERROR_SUCCESS != RegQueryValueEx(hKey, key, 0, 0, (LPBYTE)&val, &size)) {
@@ -67,14 +60,14 @@ int OpenKeyHelper::getRegInt(LPCTSTR key, const int & defaultValue) {
 	return val;
 }
 
-void OpenKeyHelper::setRegBinary(LPCTSTR key, const BYTE * pData, const int & size) {
-	openKey();
+void vie-typeHelper::setRegBinary(LPCTSTR key, const BYTE * pData, const int & size) {
+	vie-type();
 	RegSetValueEx(hKey, key, 0, REG_BINARY, pData, size);
 	RegCloseKey(hKey);
 }
 
-BYTE * OpenKeyHelper::getRegBinary(LPCTSTR key, DWORD& outSize) {
-	openKey();
+BYTE * vie-typeHelper::getRegBinary(LPCTSTR key, DWORD& outSize) {
+	vie-type();
 	if (_regData) {
 		delete[] _regData;
 		_regData = NULL;
@@ -91,28 +84,28 @@ BYTE * OpenKeyHelper::getRegBinary(LPCTSTR key, DWORD& outSize) {
 	return _regData;
 }
 
-void OpenKeyHelper::registerRunOnStartup(const int& val) {
+void vie-typeHelper::registerRunOnStartup(const int& val) {
 	if (val) {
 		if (vRunAsAdmin) {
 			string path = wideStringToUtf8(getFullPath());
 			char buff[MAX_PATH];
-			sprintf_s(buff, "schtasks /create /sc onlogon /tn OpenKey /rl highest /tr \"%s\" /f", path.c_str());
+			sprintf_s(buff, "schtasks /create /sc onlogon /tn vie-type /rl highest /tr \"%s\" /f", path.c_str());
 			WinExec(buff, SW_HIDE);
 		} else {
-			RegOpenKeyEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, NULL, KEY_ALL_ACCESS, &hKey);
+			Regvie-typeEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, NULL, KEY_ALL_ACCESS, &hKey);
 			wstring path = getFullPath();
-			RegSetValueEx(hKey, _T("OpenKey"), 0, REG_SZ, (byte*)path.c_str(), ((DWORD)path.size() + 1) * sizeof(TCHAR));
+			RegSetValueEx(hKey, _T("vie-type"), 0, REG_SZ, (byte*)path.c_str(), ((DWORD)path.size() + 1) * sizeof(TCHAR));
 			RegCloseKey(hKey);
 		}
 	} else {
-		RegOpenKeyEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, NULL, KEY_ALL_ACCESS, &hKey);
-		RegDeleteValue(hKey, _T("OpenKey"));
+		Regvie-typeEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, NULL, KEY_ALL_ACCESS, &hKey);
+		RegDeleteValue(hKey, _T("vie-type"));
 		RegCloseKey(hKey);
-		WinExec("schtasks /delete  /tn OpenKey /f", SW_HIDE);
+		WinExec("schtasks /delete  /tn vie-type /f", SW_HIDE);
 	}
 }
 
-LPTSTR OpenKeyHelper::getExecutePath() {
+LPTSTR vie-typeHelper::getExecutePath() {
 	if (!_hasGetPath) {
 		HMODULE hModule = GetModuleHandleW(NULL);
 		GetModuleFileNameW(hModule, _executePath, MAX_PATH);
@@ -121,7 +114,7 @@ LPTSTR OpenKeyHelper::getExecutePath() {
 	return _executePath;
 }
 
-string& OpenKeyHelper::getFrontMostAppExecuteName() {
+string& vie-typeHelper::getFrontMostAppExecuteName() {
 	_tempWnd = GetForegroundWindow();
 	GetWindowThreadProcessId(_tempWnd, &_tempProcessId);
 	if (_tempProcessId == _cacheProcessId) {
@@ -136,8 +129,8 @@ string& OpenKeyHelper::getFrontMostAppExecuteName() {
 		return _unknownProgram;
 	}
 	_exeName = _tcsrchr(_exePath, '\\') + 1;
-	if (wcscmp(_exeName, _T("OpenKey64.exe")) == 0 ||
-		wcscmp(_exeName, _T("OpenKey32.exe")) == 0 || 
+	if (wcscmp(_exeName, _T("vie-type64.exe")) == 0 ||
+		wcscmp(_exeName, _T("vie-type32.exe")) == 0 || 
 		wcscmp(_exeName, _T("explorer.exe")) == 0) {
 		return _exeNameUtf8;
 	}
@@ -149,13 +142,13 @@ string& OpenKeyHelper::getFrontMostAppExecuteName() {
 	return _exeNameUtf8;
 }
 
-string & OpenKeyHelper::getLastAppExecuteName() {
+string & vie-typeHelper::getLastAppExecuteName() {
 	if (!vUseSmartSwitchKey)
 		return getFrontMostAppExecuteName();
 	return _exeNameUtf8;
 }
 
-wstring OpenKeyHelper::getFullPath() {
+wstring vie-typeHelper::getFullPath() {
 	HMODULE hModule = GetModuleHandle(NULL);
 	TCHAR path[MAX_PATH];
 	GetModuleFileName(hModule, path, MAX_PATH);
@@ -163,7 +156,7 @@ wstring OpenKeyHelper::getFullPath() {
 	return rs;
 }
 
-wstring OpenKeyHelper::getClipboardText(const int& type) {
+wstring vie-typeHelper::getClipboardText(const int& type) {
 	// Try opening the clipboard
 	if (!OpenClipboard(nullptr)) {
 		return _T("");
@@ -193,7 +186,7 @@ wstring OpenKeyHelper::getClipboardText(const int& type) {
 	return text;
 }
 
-void OpenKeyHelper::setClipboardText(LPCTSTR data, const int & len, const int& type) {
+void vie-typeHelper::setClipboardText(LPCTSTR data, const int & len, const int& type) {
 	HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len * sizeof(WCHAR));
 	memcpy(GlobalLock(hMem), data, len * sizeof(WCHAR));
 	GlobalUnlock(hMem);
@@ -203,7 +196,7 @@ void OpenKeyHelper::setClipboardText(LPCTSTR data, const int & len, const int& t
 	CloseClipboard();
 }
 
-bool OpenKeyHelper::quickConvert() {
+bool vie-typeHelper::quickConvert() {
 	//read data from clipboard
 	//support Unicode raw string, Rich Text Format and HTML
 
@@ -256,7 +249,7 @@ bool OpenKeyHelper::quickConvert() {
 	return true;
 }
 
-DWORD OpenKeyHelper::getVersionNumber() {
+DWORD vie-typeHelper::getVersionNumber() {
 	// get the filename of the executable containing the version resource
 	TCHAR szFilename[MAX_PATH + 1] = { 0 };
 	if (GetModuleFileName(NULL, szFilename, MAX_PATH) == 0) {
@@ -292,7 +285,7 @@ DWORD OpenKeyHelper::getVersionNumber() {
 	return 0;
 }
 
-wstring OpenKeyHelper::getVersionString() {
+wstring vie-typeHelper::getVersionString() {
 	TCHAR versionBuffer[MAX_PATH];
 	DWORD ver = getVersionNumber();
 	wsprintfW(versionBuffer, _T("%d.%d.%d"), ver & 0xFF, (ver>>8) & 0xFF, (ver >> 16) & 0xFF);
@@ -305,10 +298,10 @@ wstring OpenKeyHelper::getVersionString() {
 	}
 }
 
-wstring OpenKeyHelper::getContentOfUrl(LPCTSTR url){
+wstring vie-typeHelper::getContentOfUrl(LPCTSTR url){
 	WCHAR path[MAX_PATH];
 	GetTempPath2(MAX_PATH, path);
-	wsprintf(path, TEXT("%s\\_OpenKey.tempf"), path);
+	wsprintf(path, TEXT("%s\\_vie-type.tempf"), path);
 	HRESULT res = URLDownloadToFile(NULL, url, path, 0, NULL);
 	
 	if (res == S_OK) {
