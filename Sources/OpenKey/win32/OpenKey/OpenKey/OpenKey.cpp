@@ -1,8 +1,8 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 #include "stdafx.h"
 #include "AppDelegate.h"
@@ -64,13 +64,13 @@ LRESULT CALLBACK keyboardHookProcess(int nCode, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK mouseHookProcess(int nCode, WPARAM wParam, LPARAM lParam);
 VOID CALLBACK winEventProcCallback(HWINEVENTHOOK hWinEventHook, DWORD dwEvent, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
 
-void vie-typeFree() {
+void vietypekeyFree() {
 	UnhookWindowsHookEx(hMouseHook);
 	UnhookWindowsHookEx(hKeyboardHook);
 	UnhookWinEvent(hSystemEvent);
 }
 
-void vie-typeInit() {
+void vietypekeyInit() {
 	APP_GET_DATA(vLanguage, 1);
 	APP_GET_DATA(vInputType, 0);
 	vFreeMark = 0;
@@ -88,7 +88,7 @@ void vie-typeInit() {
 	APP_GET_DATA(vUseGrayIcon, 0);
 	APP_GET_DATA(vShowOnStartUp, 1);
 	APP_GET_DATA(vRunWithWindows, 1);
-	vie-typeHelper::registerRunOnStartup(vRunWithWindows);
+	vietypekeyHelper::registerRunOnStartup(vRunWithWindows);
 	APP_GET_DATA(vUseSmartSwitchKey, 1);
 	APP_GET_DATA(vUpperCaseFirstChar, 0);
 	APP_GET_DATA(vAllowConsonantZFWJ, 0);
@@ -101,7 +101,7 @@ void vie-typeInit() {
 	APP_GET_DATA(vCheckNewVersion, 0);
 	APP_GET_DATA(vRememberCode, 1);
 	APP_GET_DATA(vOtherLanguage, 1);
-	APP_GET_DATA(vTempOffvie-type, 0);
+	APP_GET_DATA(vTempOffvietypekey, 0);
 	APP_GET_DATA(vFixChromiumBrowser, 0);
 
 	//init convert tool
@@ -147,12 +147,12 @@ void vie-typeInit() {
 
 	//init and load macro data
 	DWORD macroDataSize;
-	BYTE* macroData = vie-typeHelper::getRegBinary(_T("macroData"), macroDataSize);
+	BYTE* macroData = vietypekeyHelper::getRegBinary(_T("macroData"), macroDataSize);
 	initMacroMap((Byte*)macroData, (int)macroDataSize);
 
 	//init and load smart switch key data
 	DWORD smartSwitchKeySize;
-	BYTE* data = vie-typeHelper::getRegBinary(_T("smartSwitchKey"), smartSwitchKeySize);
+	BYTE* data = vietypekeyHelper::getRegBinary(_T("smartSwitchKey"), smartSwitchKeySize);
 	initSmartSwitchKey((Byte*)data, (int)smartSwitchKeySize);
 
 	//init hook
@@ -164,7 +164,7 @@ void vie-typeInit() {
 
 void saveSmartSwitchKeyData() {
 	getSmartSwitchKeySaveData(savedSmartSwitchKeyData);
-	vie-typeHelper::setRegBinary(_T("smartSwitchKey"), savedSmartSwitchKeyData.data(), (int)savedSmartSwitchKeyData.size());
+	vietypekeyHelper::setRegBinary(_T("smartSwitchKey"), savedSmartSwitchKeyData.data(), (int)savedSmartSwitchKeyData.size());
 }
 
 static void InsertKeyLength(const Uint8& len) {
@@ -261,7 +261,7 @@ static void SendKeyCode(Uint32 data) {
 
 static void SendBackspace() {
 	SendInput(2, backspaceEvent, sizeof(INPUT));
-	if (vSupportMetroApp && vie-typeHelper::getLastAppExecuteName().compare("ApplicationFrameHost.exe") == 0) {//Metro App
+	if (vSupportMetroApp && vietypekeyHelper::getLastAppExecuteName().compare("ApplicationFrameHost.exe") == 0) {//Metro App
 		SendMessage(HWND_BROADCAST, WM_CHAR, VK_BACK, 0L);
 		SendMessage(HWND_BROADCAST, WM_CHAR, VK_BACK, 0L);
 	}
@@ -271,7 +271,7 @@ static void SendBackspace() {
 				SendInput(2, backspaceEvent, sizeof(INPUT));
 			}*/
 			SendInput(2, backspaceEvent, sizeof(INPUT));
-			if (vSupportMetroApp && vie-typeHelper::getLastAppExecuteName().compare("ApplicationFrameHost.exe") == 0) {//Metro App
+			if (vSupportMetroApp && vietypekeyHelper::getLastAppExecuteName().compare("ApplicationFrameHost.exe") == 0) {//Metro App
 				SendMessage(HWND_BROADCAST, WM_CHAR, VK_BACK, 0L);
 				SendMessage(HWND_BROADCAST, WM_CHAR, VK_BACK, 0L);
 			}
@@ -361,7 +361,7 @@ static void SendNewCharString(const bool& dataFromMacro = false) {
 		startNewSession();
 	}
 
-	vie-typeHelper::setClipboardText((LPCTSTR)_newCharString.data(), _newCharSize + 1, CF_UNICODETEXT);
+	vietypekeyHelper::setClipboardText((LPCTSTR)_newCharString.data(), _newCharSize + 1, CF_UNICODETEXT);
 
 	//Send shift + insert
 	SendCombineKey(KEY_LEFT_SHIFT, VK_INSERT, 0, KEYEVENTF_EXTENDEDKEY);
@@ -400,7 +400,7 @@ void switchLanguage() {
 		MessageBeep(MB_OK);
 	AppDelegate::getInstance()->onInputMethodChangedFromHotKey();
 	if (vUseSmartSwitchKey) {
-		setAppInputMethodStatus(vie-typeHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
+		setAppInputMethodStatus(vietypekeyHelper::getFrontMostAppExecuteName(), vLanguage | (vCodeTable << 1));
 		saveSmartSwitchKeyData();
 	}
 	startNewSession();
@@ -544,7 +544,7 @@ LRESULT CALLBACK keyboardHookProcess(int nCode, WPARAM wParam, LPARAM lParam) {
 			if (vTempOffSpelling && !_hasJustUsedHotKey && _lastFlag & MASK_CONTROL) {
 				vTempOffSpellChecking();
 			}
-			if (vTempOffvie-type && !_hasJustUsedHotKey && _lastFlag & MASK_ALT) {
+			if (vTempOffvietypekey && !_hasJustUsedHotKey && _lastFlag & MASK_ALT) {
 				vTempOffEngine();
 			}
 			_lastFlag = _flag;
@@ -599,7 +599,7 @@ LRESULT CALLBACK keyboardHookProcess(int nCode, WPARAM wParam, LPARAM lParam) {
 			//fix autocomplete
 			if (vFixRecommendBrowser && pData->extCode != 4) {
 				if (vFixChromiumBrowser && 
-					std::find(_chromiumBrowser.begin(), _chromiumBrowser.end(), vie-typeHelper::getLastAppExecuteName()) != _chromiumBrowser.end()) {
+					std::find(_chromiumBrowser.begin(), _chromiumBrowser.end(), vietypekeyHelper::getLastAppExecuteName()) != _chromiumBrowser.end()) {
 					SendCombineKey(KEY_LEFT_SHIFT, KEY_LEFT, 0, KEYEVENTF_EXTENDEDKEY);
 					if (pData->backspaceCount == 1)
 						pData->backspaceCount--;
@@ -667,7 +667,7 @@ LRESULT CALLBACK mouseHookProcess(int nCode, WPARAM wParam, LPARAM lParam) {
 VOID CALLBACK winEventProcCallback(HWINEVENTHOOK hWinEventHook, DWORD dwEvent, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime) {
 	//smart switch key
 	if (vUseSmartSwitchKey || vRememberCode) {
-		string& exe = vie-typeHelper::getFrontMostAppExecuteName();
+		string& exe = vietypekeyHelper::getFrontMostAppExecuteName();
 		if (exe.compare("explorer.exe") == 0) //dont apply with windows explorer
 			return;
 		_languageTemp = getAppInputMethodStatus(exe, vLanguage | (vCodeTable << 1));
