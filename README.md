@@ -1,5 +1,5 @@
-# GTMD
-Gõ tiếng mẹ đẻ cho Windows
+# Vie-type
+Gõ tiếng Việt cho Windows
 
 ## Tính năng
 Mặc định, OpenKey cho phép gõ với chế độ bỏ dấu tự do, không cần phải bỏ dấu sau nguyên âm.
