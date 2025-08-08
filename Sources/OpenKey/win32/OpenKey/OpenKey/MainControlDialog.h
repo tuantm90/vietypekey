@@ -1,8 +1,8 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 #pragma once
 #include "BaseDialog.h"
@@ -19,7 +19,7 @@ private:
 		checkAllowZWJF, checkTempOffSpelling, checkQuickStartConsonant, checkQuickEndConsonant;
 	HWND checkSmartSwitchKey, checkCapsFirstChar, checkQuickTelex, checkUseMacro, checkUseMacroInEnglish;
 	HWND checkCreateDesktopShortcut, checkCheckNewVersion, checkRunAsAdmin, checkSupportMetroApp, checkMacroAutoCaps;
-	HWND checkFixChromium, checkRememberTableCode, checkTempOffvie-type, checkAllowOtherLanguages;
+	HWND checkFixChromium, checkRememberTableCode, checkTempOffvietypekey, checkAllowOtherLanguages;
 	HWND hUpdateButton;
 private:
 	void initDialog();
