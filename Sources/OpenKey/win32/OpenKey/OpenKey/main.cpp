@@ -1,15 +1,8 @@
 /*----------------------------------------------------------
-OpenKey - The Cross platform Open source Vietnamese Keyboard application.
+Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
 
-Copyright (C) 2019 Mai Vu Tuyen
-Contact: maivutuyen.91@gmail.com
-Github: https://github.com/tuyenvm/OpenKey
-Fanpage: https://www.facebook.com/OpenKeyVN
-
-This file is belong to the OpenKey project, Win32 version
-which is released under GPL license.
-You can fork, modify, improve this program. If you
-redistribute your new version, it MUST be open source.
+Copyright (C) 2025 tuantm90
+Github: hhttps://github.com/tuantm90/vie-type
 -----------------------------------------------------------*/
 #include "stdafx.h"
 #include "AppDelegate.h"
@@ -28,7 +21,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	APP_GET_DATA(vRunAsAdmin, 0);
 	if (vRunAsAdmin && !IsUserAnAdmin()) {
 		//create admin process
-		ShellExecute(0, L"runas", OpenKeyHelper::getFullPath().c_str(), 0, 0, SW_SHOWNORMAL);
+		ShellExecute(0, L"runas", vie-typeHelper::getFullPath().c_str(), 0, 0, SW_SHOWNORMAL);
 		return 1;
 	}
 #endif
