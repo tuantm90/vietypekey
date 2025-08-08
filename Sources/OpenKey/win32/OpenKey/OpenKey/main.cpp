@@ -1,8 +1,8 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 #include "stdafx.h"
 #include "AppDelegate.h"
@@ -21,7 +21,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	APP_GET_DATA(vRunAsAdmin, 0);
 	if (vRunAsAdmin && !IsUserAnAdmin()) {
 		//create admin process
-		ShellExecute(0, L"runas", vie-typeHelper::getFullPath().c_str(), 0, 0, SW_SHOWNORMAL);
+		ShellExecute(0, L"runas", vietypekeyHelper::getFullPath().c_str(), 0, 0, SW_SHOWNORMAL);
 		return 1;
 	}
 #endif
