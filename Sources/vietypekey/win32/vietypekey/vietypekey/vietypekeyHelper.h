@@ -4,40 +4,274 @@ vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 Copyright (C) 2025 tuantm90
 Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
-#pragma once
-#include "stdafx.h"
+#include "vietypekeyHelper.h"
+#include <stdarg.h>
+#include <Urlmon.h>
+#include <fstream>
+#include <sstream>
 
-extern int CF_RTF;
-extern int CF_HTML;
-extern int CF_vietypekey;
+#pragma comment(lib, "version.lib")
+#pragma comment(lib, "Urlmon.lib")
 
-class vietypekeyHelper {
-private:
-	static void vietypekey();
-public:
-	static void setRegInt(LPCTSTR key, const int& val);
-	static int getRegInt(LPCTSTR key, const int& defaultValue);
+static BYTE* _regData = 0;
 
-	static void setRegBinary(LPCTSTR key, const BYTE* pData, const int& size);
-	static BYTE* getRegBinary(LPCTSTR key, DWORD& outSize);
+static LPCTSTR sk = TEXT("SOFTWARE\\Tuantm\\vietypekey");
+static HKEY hKey;
+static LPCTSTR _runOnStartupKeyPath = _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
+static TCHAR _executePath[MAX_PATH];
+static bool _hasGetPath = false;
 
-	static void registerRunOnStartup(const int& val);
+static DWORD _cacheProcessId = 0, _tempProcessId = 0;
+static HWND _tempWnd;
+static TCHAR _exePath[1024] = { 0 };
+static LPCTSTR _exeName = _exePath;
+static HANDLE _proc;
+static string _exeNameUtf8 = "ThevietypekeyProject";
+static string _unknownProgram = "UnknownProgram";
 
-	static LPTSTR getExecutePath();
+int CF_RTF = RegisterClipboardFormat(_T("Rich Text Format"));
+int CF_HTML = RegisterClipboardFormat(_T("HTML Format"));
+int CF_vietypekey = RegisterClipboardFormat(_T("vietypekey Format"));
 
-	static string& getFrontMostAppExecuteName();
-	static string& getLastAppExecuteName();
+void vietypekeyHelper::vietypekey() {
+    LONG nError = RegOpenKeyEx(HKEY_CURRENT_USER, sk, 0, KEY_ALL_ACCESS, &hKey);
+    if (nError == ERROR_FILE_NOT_FOUND) {
+        nError = RegCreateKeyEx(HKEY_CURRENT_USER, sk, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hKey, NULL);
+    }
+    if (nError) {
+        LOG(L"result %d\n", nError);
+    }
+}
 
-	static wstring getFullPath();
+void vietypekeyHelper::setRegInt(LPCTSTR key, const int & val) {
+    vietypekey();
+    RegSetValueEx(hKey, key, 0, REG_DWORD, (LPBYTE)&val, sizeof(val));
+    RegCloseKey(hKey);
+}
 
-	static wstring getClipboardText(const int& type);
-	static void setClipboardText(LPCTSTR data, const int& len, const int& type);
+int vietypekeyHelper::getRegInt(LPCTSTR key, const int & defaultValue) {
+    vietypekey();
+    int val = defaultValue;
+    DWORD size = sizeof(val);
+    if (ERROR_SUCCESS != RegQueryValueEx(hKey, key, 0, 0, (LPBYTE)&val, &size)) {
+        val = defaultValue;
+    }
+    RegCloseKey(hKey);
+    return val;
+}
 
-	static bool quickConvert();
+void vietypekeyHelper::setRegBinary(LPCTSTR key, const BYTE * pData, const int & size) {
+    vietypekey();
+    RegSetValueEx(hKey, key, 0, REG_BINARY, pData, size);
+    RegCloseKey(hKey);
+}
 
-	static DWORD getVersionNumber();
-	static wstring getVersionString();
+BYTE * vietypekeyHelper::getRegBinary(LPCTSTR key, DWORD& outSize) {
+    vietypekey();
+    if (_regData) {
+        delete[] _regData;
+        _regData = NULL;
+    }
+    DWORD size = 0;
+    RegQueryValueEx(hKey, key, 0, 0, 0, &size);
+    _regData = new BYTE[size];
+    if (ERROR_SUCCESS != RegQueryValueEx(hKey, key, 0, 0, _regData, &size)) {
+        delete[] _regData;
+        _regData = NULL;
+    }
+    outSize = size;
+    RegCloseKey(hKey);
+    return _regData;
+}
 
-	static wstring getContentOfUrl(LPCTSTR url);
-};
+void vietypekeyHelper::registerRunOnStartup(const int& val) {
+    if (val) {
+        if (vRunAsAdmin) {
+            string path = wideStringToUtf8(getFullPath());
+            char buff[MAX_PATH];
+            sprintf_s(buff, "schtasks /create /sc onlogon /tn vietypekey /rl highest /tr \"%s\" /f", path.c_str());
+            WinExec(buff, SW_HIDE);
+        } else {
+            RegOpenKeyEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, 0, KEY_ALL_ACCESS, &hKey);
+            wstring path = getFullPath();
+            RegSetValueEx(hKey, _T("vietypekey"), 0, REG_SZ, (byte*)path.c_str(), ((DWORD)path.size() + 1) * sizeof(TCHAR));
+            RegCloseKey(hKey);
+        }
+    } else {
+        RegOpenKeyEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, 0, KEY_ALL_ACCESS, &hKey);
+        RegDeleteValue(hKey, _T("vietypekey"));
+        RegCloseKey(hKey);
+        WinExec("schtasks /delete /tn vietypekey /f", SW_HIDE);
+    }
+}
+
+LPTSTR vietypekeyHelper::getExecutePath() {
+    if (!_hasGetPath) {
+        HMODULE hModule = GetModuleHandleW(NULL);
+        GetModuleFileNameW(hModule, _executePath, MAX_PATH);
+        _hasGetPath = true;
+    }
+    return _executePath;
+}
+
+string& vietypekeyHelper::getFrontMostAppExecuteName() {
+    _tempWnd = GetForegroundWindow();
+    GetWindowThreadProcessId(_tempWnd, &_tempProcessId);
+    if (_tempProcessId == _cacheProcessId) {
+        return _exeNameUtf8;
+    }
+    _cacheProcessId = _tempProcessId;
+    _proc = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, _tempProcessId);
+    GetProcessImageFileName((HMODULE)_proc, _exePath, 1024);
+    CloseHandle(_proc);
+
+    if (wcscmp(_exePath, _T("")) == 0) {
+        return _unknownProgram;
+    }
+    _exeName = _tcsrchr(_exePath, '\\') + 1;
+    if (wcscmp(_exeName, _T("vietypekey64.exe")) == 0 ||
+        wcscmp(_exeName, _T("vietypekey32.exe")) == 0 ||
+        wcscmp(_exeName, _T("explorer.exe")) == 0) {
+        return _exeNameUtf8;
+    }
+    int size_needed = WideCharToMultiByte(CP_UTF8, 0, _exeName, (int)lstrlen(_exeName), NULL, 0, NULL, NULL);
+    std::string strTo(size_needed, 0);
+    WideCharToMultiByte(CP_UTF8, 0, _exeName, (int)lstrlen(_exeName), &strTo[0], size_needed, NULL, NULL);
+    _exeNameUtf8 = strTo;
+    return _exeNameUtf8;
+}
+
+string & vietypekeyHelper::getLastAppExecuteName() {
+    if (!vUseSmartSwitchKey)
+        return getFrontMostAppExecuteName();
+    return _exeNameUtf8;
+}
+
+wstring vietypekeyHelper::getFullPath() {
+    HMODULE hModule = GetModuleHandle(NULL);
+    TCHAR path[MAX_PATH];
+    GetModuleFileName(hModule, path, MAX_PATH);
+    wstring rs(path);
+    return rs;
+}
+
+wstring vietypekeyHelper::getClipboardText(const int& type) {
+    if (!OpenClipboard(nullptr)) {
+        return _T("");
+    }
+    HANDLE hData = GetClipboardData(type);
+    if (hData == nullptr) {
+        return _T("");
+    }
+    wchar_t * pszText = static_cast<wchar_t*>(GlobalLock(hData));
+    if (pszText == nullptr) {
+        return _T("");
+    }
+    wstring text(pszText);
+    GlobalUnlock(hData);
+    CloseClipboard();
+    return text;
+}
+
+void vietypekeyHelper::setClipboardText(LPCTSTR data, const int & len, const int& type) {
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, len * sizeof(WCHAR));
+    memcpy(GlobalLock(hMem), data, len * sizeof(WCHAR));
+    GlobalUnlock(hMem);
+    OpenClipboard(0);
+    EmptyClipboard();
+    SetClipboardData(type, hMem);
+    CloseClipboard();
+}
+
+bool vietypekeyHelper::quickConvert() {
+    if (!OpenClipboard(nullptr)) {
+        return false;
+    }
+    string dataHTML, dataRTF;
+    wstring dataUnicode;
+    char* pHTML = 0, pRTF = 0;
+    wchar_t* pUnicode = 0;
+    HANDLE hData = GetClipboardData(CF_HTML);
+    if (hData) {
+        pHTML = static_cast<char*>(GlobalLock(hData));
+        GlobalUnlock(hData);
+    }
+    if (pHTML) {
+        dataHTML = pHTML;
+        dataHTML = convertUtil(dataHTML);
+    }
+    hData = GetClipboardData(CF_UNICODETEXT);
+    if (hData) {
+        pUnicode = static_cast<wchar_t*>(GlobalLock(hData));
+        GlobalUnlock(hData);
+    }
+    if (pUnicode) {
+        dataUnicode = pUnicode;
+        dataUnicode = utf8ToWideString(convertUtil(wideStringToUtf8(dataUnicode)));
+    }
+    OpenClipboard(0);
+    EmptyClipboard();
+    HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, (int)(dataHTML.size() + 1) * sizeof(char));
+    memcpy(GlobalLock(hMem), dataHTML.c_str(), (int)(dataHTML.size() + 1) * sizeof(char));
+    GlobalUnlock(hMem);
+    SetClipboardData(CF_HTML, hMem);
+    hMem = GlobalAlloc(GMEM_MOVEABLE, (int)(dataUnicode.size() + 1) * sizeof(wchar_t));
+    memcpy(GlobalLock(hMem), dataUnicode.c_str(), (int)(dataUnicode.size() + 1) * sizeof(wchar_t));
+    GlobalUnlock(hMem);
+    SetClipboardData(CF_UNICODETEXT, hMem);
+    CloseClipboard();
+    return true;
+}
+
+DWORD vietypekeyHelper::getVersionNumber() {
+    TCHAR szFilename[MAX_PATH + 1] = { 0 };
+    if (GetModuleFileName(NULL, szFilename, MAX_PATH) == 0) {
+        return 0;
+    }
+    DWORD dummy;
+    UINT dwSize = GetFileVersionInfoSize(szFilename, &dummy);
+    if (dwSize == 0) {
+        return 0;
+    }
+    std::vector<BYTE> data(dwSize);
+    if (!GetFileVersionInfo(szFilename, NULL, dwSize, &data[0])) {
+        return 0;
+    }
+    LPBYTE lpBuffer = NULL;
+    if (VerQueryValue(&data[0], _T("\\"), (VOID FAR * FAR*) & lpBuffer, &dwSize)) {
+        if (dwSize) {
+            VS_FIXEDFILEINFO* verInfo = (VS_FIXEDFILEINFO*)lpBuffer;
+            if (verInfo->dwSignature == 0xfeef04bd) {
+                return ((verInfo->dwFileVersionMS >> 16) & 0xffff) |
+                    (((verInfo->dwFileVersionMS >> 0) & 0xffff) << 8) |
+                    (((verInfo->dwFileVersionLS >> 16) & 0xffff) << 16);
+            }
+        }
+    }
+    return 0;
+}
+
+wstring vietypekeyHelper::getVersionString() {
+    TCHAR versionBuffer[MAX_PATH];
+    DWORD ver = getVersionNumber();
+    wsprintfW(versionBuffer, _T("%d.%d.%d"), ver & 0xFF, (ver>>8) & 0xFF, (ver >> 16) & 0xFF);
+    return wstring(versionBuffer);
+}
+
+wstring vietypekeyHelper::getContentOfUrl(LPCTSTR url){
+    WCHAR path[MAX_PATH];
+    GetTempPath2(MAX_PATH, path);
+    wsprintf(path, TEXT("%s\\_vietypekey.tempf"), path);
+    HRESULT res = URLDownloadToFile(NULL, url, path, 0, NULL);
+
+    if (res == S_OK) {
+        std::wifstream t(path);
+        std::wstringstream buffer;
+        buffer << t.rdbuf();
+        t.close();
+        DeleteFile(path);
+        return buffer.str();
+    }
+    return L"";
+}
 
