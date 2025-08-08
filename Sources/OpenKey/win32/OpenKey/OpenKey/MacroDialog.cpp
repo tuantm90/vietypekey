@@ -1,8 +1,8 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 #include "MacroDialog.h"
 #include "stdafx.h"
@@ -119,7 +119,7 @@ void MacroDialog::saveAndReload() {
 	//save
 	vector<Byte> macroData;
 	getMacroSaveData(macroData);
-	vie-typeHelper::setRegBinary(_T("macroData"), macroData.data(), (int)macroData.size());
+	vietypekeyHelper::setRegBinary(_T("macroData"), macroData.data(), (int)macroData.size());
 
 	//reload data
 	fillData();
@@ -158,7 +158,7 @@ void MacroDialog::onAddMacroButton() {
 	wstring content = buffer;
 
 	if (name.compare(L"") == 0 || content.compare(L"") == 0) {
-		MessageBox(hDlg, _T("Bạn hãy nhập từ cần gõ tắt!"), _T("vie-type"), MB_OK);
+		MessageBox(hDlg, _T("Bạn hãy nhập từ cần gõ tắt!"), _T("vietypekey"), MB_OK);
 		return;
 	}
 
@@ -175,7 +175,7 @@ void MacroDialog::onDeleteMacroButton() {
 	wstring name = buffer;
 
 	if (name.compare(L"") == 0) {
-		MessageBox(hDlg, _T("Bạn hãy chọn từ cần xoá!"), _T("vie-type"), MB_OK);
+		MessageBox(hDlg, _T("Bạn hãy chọn từ cần xoá!"), _T("vietypekey"), MB_OK);
 		return;
 	}
 
