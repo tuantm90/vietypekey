@@ -1,10 +1,10 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
-#include "vie-typeManager.h"
+#include "vietypekeyManager.h"
 #include <shlobj.h>
 
 static vector<LPCTSTR> _inputType = {
@@ -23,29 +23,29 @@ static vector<LPCTSTR> _tableCode = {
 
 /*-----------------------------------------------------------------------*/
 
-extern void vie-typeInit();
-extern void vie-typeFree();
+extern void vietypekeyInit();
+extern void vietypekeyFree();
 
-unsigned short  vie-typeManager::_lastKeyCode = 0;
+unsigned short  vietypekeyManager::_lastKeyCode = 0;
 
-vector<LPCTSTR>& vie-typeManager::getInputType() {
+vector<LPCTSTR>& vietypekeyManager::getInputType() {
 	return _inputType;
 }
 
-vector<LPCTSTR>& vie-typeManager::getTableCode() {
+vector<LPCTSTR>& vietypekeyManager::getTableCode() {
 	return _tableCode;
 }
 
-void vie-typeManager::initEngine() {
-	vie-typeInit();
+void vietypekeyManager::initEngine() {
+	vietypekeyInit();
 }
 
-void vie-typeManager::freeEngine() {
-	vie-typeFree();
+void vietypekeyManager::freeEngine() {
+	vietypekeyFree();
 }
 
-bool vie-typeManager::checkUpdate(string& newVersion) {
-	wstring dataW = vie-typeHelper::getContentOfUrl(L"https://raw.githubusercontent.com/tuyenvm/vie-type/master/version.json");
+bool vietypekeyManager::checkUpdate(string& newVersion) {
+	wstring dataW = vietypekeyHelper::getContentOfUrl(L"https://raw.githubusercontent.com/tuyenvm/vietypekey/master/version.json");
 	string data = wideStringToUtf8(dataW);
 
 	//simple parse
@@ -87,22 +87,22 @@ bool vie-typeManager::checkUpdate(string& newVersion) {
 	DWORD newVersionCode = (DWORD)atoi(newVersionCodeStr.data());
 	newVersionCode = shiftVersion(newVersionCode);
 
-	DWORD currentVersionCode = vie-typeHelper::getVersionNumber();
+	DWORD currentVersionCode = vietypekeyHelper::getVersionNumber();
 	currentVersionCode = shiftVersion(currentVersionCode);
 
 	return newVersionCode > currentVersionCode;
 }
 
-void vie-typeManager::createDesktopShortcut() {
+void vietypekeyManager::createDesktopShortcut() {
 	CoInitialize(NULL);
 	IShellLink* pShellLink = NULL;
 	HRESULT hres;
 	hres = CoCreateInstance(CLSID_ShellLink, NULL, CLSCTX_ALL,
 							IID_IShellLink, (void**)&pShellLink);
 	if (SUCCEEDED(hres)) {
-		wstring path = vie-typeHelper::getFullPath();
+		wstring path = vietypekeyHelper::getFullPath();
 		pShellLink->SetPath(path.c_str());
-		pShellLink->SetDescription(_T("vie-type - Bộ gõ Tiếng Việt"));
+		pShellLink->SetDescription(_T("vietypekey - Bộ gõ Tiếng Việt"));
 		pShellLink->SetIconLocation(path.c_str(), 0);
 
 		IPersistFile* pPersistFile;
@@ -112,7 +112,7 @@ void vie-typeManager::createDesktopShortcut() {
 			wchar_t desktopPath[MAX_PATH + 1];
 			wchar_t savePath[MAX_PATH + 10];
 			SHGetFolderPath(NULL, CSIDL_DESKTOP, NULL, 0, desktopPath);
-			wsprintf(savePath, _T("%s\\vie-type.lnk"), desktopPath);
+			wsprintf(savePath, _T("%s\\vietypekey.lnk"), desktopPath);
 			hres = pPersistFile->Save(savePath, TRUE);
 			pPersistFile->Release();
 			pShellLink->Release();
