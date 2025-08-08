@@ -35,8 +35,8 @@ Github: hhttps://github.com/tuantm90/vie-type
 
 #include "../../../engine/Engine.h"
 
-#include "OpenKeyManager.h"
-#include "OpenKeyHelper.h"
+#include "vie-typeManager.h"
+#include "vie-typeHelper.h"
 #include "SystemTrayHelper.h"
 
 using namespace std;
@@ -45,10 +45,10 @@ extern wchar_t _logBuffer[1024];
 #define LOG(...)  wsprintfW(_logBuffer, __VA_ARGS__); \
 					OutputDebugString(_logBuffer);
 
-#define APP_SET_DATA(KEY, VAL) KEY = VAL; OpenKeyHelper::setRegInt(_T(#KEY), KEY)
-#define APP_GET_DATA(KEY, DEFAULT_VAL) KEY = OpenKeyHelper::getRegInt(_T(#KEY), DEFAULT_VAL)
+#define APP_SET_DATA(KEY, VAL) KEY = VAL; vie-typeHelper::setRegInt(_T(#KEY), KEY)
+#define APP_GET_DATA(KEY, DEFAULT_VAL) KEY = vie-typeHelper::getRegInt(_T(#KEY), DEFAULT_VAL)
 
-#define APP_CLASS _T("OpenKeyVietnameseInputMethod")
+#define APP_CLASS _T("vie-typeVietnameseInputMethod")
 
 extern void saveSmartSwitchKeyData();
 
@@ -77,5 +77,5 @@ extern int vRunAsAdmin;
 extern int vCheckNewVersion;
 extern int vRememberCode;
 extern int vOtherLanguage;
-extern int vTempOffOpenKey;
+extern int vTempOffvie-type;
 extern int vFixChromiumBrowser;
