@@ -15,7 +15,7 @@ Github: hhttps://github.com/tuantm90/vietypekey
 
 static BYTE* _regData = 0;
 
-static LPCTSTR sk = TEXT("SOFTWARE\\Tuantm\\vietypekey");
+static LPCTSTR sk = TEXT("SOFTWARE\\Tuantm\\VietypeKey");
 static HKEY hKey;
 static LPCTSTR _runOnStartupKeyPath = _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
 static TCHAR _executePath[MAX_PATH];
@@ -26,15 +26,15 @@ static HWND _tempWnd;
 static TCHAR _exePath[1024] = { 0 };
 static LPCTSTR _exeName = _exePath;
 static HANDLE _proc;
-static string _exeNameUtf8 = "ThevietypekeyProject";
+static string _exeNameUtf8 = "ThevietypekeyHelperProject";
 static string _unknownProgram = "UnknownProgram";
 
 int CF_RTF = RegisterClipboardFormat(_T("Rich Text Format"));
 int CF_HTML = RegisterClipboardFormat(_T("HTML Format"));
-int CF_vietypekey = RegisterClipboardFormat(_T("vietypekey Format"));
+int CF_VIETYPEKEY = RegisterClipboardFormat(_T("vietypekeyHelper Format"));
 
-void vietypekeyHelper::vietypekey() {
-	LONG nError = RegvietypekeyEx(HKEY_CURRENT_USER, sk, NULL, KEY_ALL_ACCESS, &hKey);
+void  vietypekeyHelper::openKey() {
+	LONG nError = RegOpenKeyEx(HKEY_CURRENT_USER, sk, NULL, KEY_ALL_ACCESS, &hKey);
 	if (nError == ERROR_FILE_NOT_FOUND) 	{
 		nError = RegCreateKeyEx(HKEY_CURRENT_USER, sk, NULL, NULL, REG_OPTION_NON_VOLATILE, KEY_CREATE_SUB_KEY, NULL, &hKey, NULL);
 	}
@@ -44,13 +44,13 @@ void vietypekeyHelper::vietypekey() {
 }
 
 void vietypekeyHelper::setRegInt(LPCTSTR key, const int & val) {
-	vietypekey();
+	openKey();
 	RegSetValueEx(hKey, key, 0, REG_DWORD, (LPBYTE)&val, sizeof(val));
 	RegCloseKey(hKey);
 }
 
 int vietypekeyHelper::getRegInt(LPCTSTR key, const int & defaultValue) {
-	vietypekey();
+	openKey();
 	int val = defaultValue;
 	DWORD size = sizeof(val);
 	if (ERROR_SUCCESS != RegQueryValueEx(hKey, key, 0, 0, (LPBYTE)&val, &size)) {
@@ -61,13 +61,13 @@ int vietypekeyHelper::getRegInt(LPCTSTR key, const int & defaultValue) {
 }
 
 void vietypekeyHelper::setRegBinary(LPCTSTR key, const BYTE * pData, const int & size) {
-	vietypekey();
+	openKey();
 	RegSetValueEx(hKey, key, 0, REG_BINARY, pData, size);
 	RegCloseKey(hKey);
 }
 
 BYTE * vietypekeyHelper::getRegBinary(LPCTSTR key, DWORD& outSize) {
-	vietypekey();
+	openKey();
 	if (_regData) {
 		delete[] _regData;
 		_regData = NULL;
@@ -89,19 +89,19 @@ void vietypekeyHelper::registerRunOnStartup(const int& val) {
 		if (vRunAsAdmin) {
 			string path = wideStringToUtf8(getFullPath());
 			char buff[MAX_PATH];
-			sprintf_s(buff, "schtasks /create /sc onlogon /tn vietypekey /rl highest /tr \"%s\" /f", path.c_str());
+			sprintf_s(buff, "schtasks /create /sc onlogon /tn OpenKey /rl highest /tr \"%s\" /f", path.c_str());
 			WinExec(buff, SW_HIDE);
 		} else {
-			RegvietypekeyEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, NULL, KEY_ALL_ACCESS, &hKey);
+			RegOpenKeyEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, NULL, KEY_ALL_ACCESS, &hKey);
 			wstring path = getFullPath();
-			RegSetValueEx(hKey, _T("vietypekey"), 0, REG_SZ, (byte*)path.c_str(), ((DWORD)path.size() + 1) * sizeof(TCHAR));
+			RegSetValueEx(hKey, _T("OpenKey"), 0, REG_SZ, (byte*)path.c_str(), ((DWORD)path.size() + 1) * sizeof(TCHAR));
 			RegCloseKey(hKey);
 		}
 	} else {
-		RegvietypekeyEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, NULL, KEY_ALL_ACCESS, &hKey);
-		RegDeleteValue(hKey, _T("vietypekey"));
+		RegOpenKeyEx(HKEY_CURRENT_USER, _runOnStartupKeyPath, NULL, KEY_ALL_ACCESS, &hKey);
+		RegDeleteValue(hKey, _T("OpenKey"));
 		RegCloseKey(hKey);
-		WinExec("schtasks /delete  /tn vietypekey /f", SW_HIDE);
+		WinExec("schtasks /delete  /tn OpenKey /f", SW_HIDE);
 	}
 }
 
@@ -129,8 +129,8 @@ string& vietypekeyHelper::getFrontMostAppExecuteName() {
 		return _unknownProgram;
 	}
 	_exeName = _tcsrchr(_exePath, '\\') + 1;
-	if (wcscmp(_exeName, _T("vietypekey64.exe")) == 0 ||
-		wcscmp(_exeName, _T("vietypekey32.exe")) == 0 || 
+	if (wcscmp(_exeName, _T("OpenKey64.exe")) == 0 ||
+		wcscmp(_exeName, _T("OpenKey32.exe")) == 0 || 
 		wcscmp(_exeName, _T("explorer.exe")) == 0) {
 		return _exeNameUtf8;
 	}
@@ -301,7 +301,7 @@ wstring vietypekeyHelper::getVersionString() {
 wstring vietypekeyHelper::getContentOfUrl(LPCTSTR url){
 	WCHAR path[MAX_PATH];
 	GetTempPath2(MAX_PATH, path);
-	wsprintf(path, TEXT("%s\\_vietypekey.tempf"), path);
+	wsprintf(path, TEXT("%s\\_OpenKey.tempf"), path);
 	HRESULT res = URLDownloadToFile(NULL, url, path, 0, NULL);
 	
 	if (res == S_OK) {
@@ -319,4 +319,3 @@ wstring vietypekeyHelper::getContentOfUrl(LPCTSTR url){
 		
 	}
 	return L"";
-}
