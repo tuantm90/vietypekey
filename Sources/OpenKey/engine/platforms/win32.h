@@ -1,12 +1,12 @@
 //
 // win32.h
-// Created by Tuyen Mai on 9/10/19.
-// Copyright (c) 2019 Tuyen Mai. All rights reserved.
+// Created by T.
+// Copyright (c) 2025 T. All rights reserved.
 //
 
 
-#ifndef OPENKEY_WIN32_H
-#define OPENKEY_WIN32_H
+#ifndef vietypekey_WIN32_H
+#define vietypekey_WIN32_H
 #include <windows.h>
 
 //define Key code for Windows keyboard
@@ -76,4 +76,4 @@
 #define KEY_COMMA                               VK_OEM_COMMA
 #define KEY_SLASH                               191
 
-#endif //OPENKEY_WIN32_H
+#endif //vietypekey_WIN32_H
