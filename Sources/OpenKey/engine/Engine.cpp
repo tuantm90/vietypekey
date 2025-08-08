@@ -1,9 +1,9 @@
 //
 //  Engine.cpp
-//  OpenKey
+//  vietypekey
 //
-//  Created by Tuyen on 1/18/19.
-//  Copyright © 2019 Tuyen Mai. All rights reserved.
+//  Created by T.
+//  Copyright © 2025 T. All rights reserved.
 //
 #include <iostream>
 #include <algorithm>
