@@ -1,16 +1,16 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by OpenKeyUpdate.rc
+// Used by vietypekeyUpdate.rc
 //
 #define IDC_MYICON                      2
-#define IDD_OPENKEYUPDATE_DIALOG        102
+#define IDD_vietypekeyUPDATE_DIALOG        102
 #define IDS_APP_TITLE                   103
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
-#define IDI_OPENKEYUPDATE               107
+#define IDI_vietypekeyUPDATE               107
 #define IDI_SMALL                       108
-#define IDC_OPENKEYUPDATE               109
+#define IDC_vietypekeyUPDATE               109
 #define IDR_MAINFRAME                   128
 #define IDD_DIALOG1                     129
 #define IDD_DIALOG_UPDATER              129
