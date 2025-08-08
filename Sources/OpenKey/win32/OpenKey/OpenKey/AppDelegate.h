@@ -1,8 +1,8 @@
 /*----------------------------------------------------------
-Vie-Type - The Cross platform Open source Vietnamese Keyboard application.
+vietypekey - The Cross platform Open source Vietnamese Keyboard application.
 
 Copyright (C) 2025 tuantm90
-Github: hhttps://github.com/tuantm90/vie-type
+Github: hhttps://github.com/tuantm90/vietypekey
 -----------------------------------------------------------*/
 #pragma once
 #include "stdafx.h"
@@ -42,6 +42,6 @@ public: //event
 	void onTableCode(const int& code);
 
 	void onControlPanel();
-	void onvie-typeAbout();
-	void onvie-typeExit();
+	void onvietypekeyAbout();
+	void onvietypekeyExit();
 };
