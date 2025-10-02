@@ -2,7 +2,7 @@
 Gõ tiếng Việt cho Windows
 
 ## Tính năng
-Mặc định, OpenKey cho phép gõ với chế độ bỏ dấu tự do, không cần phải bỏ dấu sau nguyên âm.
+Mặc định, vietypekey cho phép gõ với chế độ bỏ dấu tự do, không cần phải bỏ dấu sau nguyên âm.
 * Hỗ trợ kiểu gõ:
 	* Telex
 	* VNI
@@ -39,7 +39,7 @@ Mặc định, OpenKey cho phép gõ với chế độ bỏ dấu tự do, khôn
 	* Chuyển mã với nhiều tùy chọn.
 
  * ## Cài đặt
-- Vào [đây](https://github.com/tuyenvm/OpenKey/releases/latest) tải file `.zip` phiên bản mới nhất về máy, giải nén vào nơi bất kỳ.
+- Vào [đây]([https://github.com/tuyenvm/OpenKey/releases/latest](https://github.com/tuantm90/vietypekey/releases) tải file `.zip` phiên bản mới nhất về máy, giải nén vào nơi bất kỳ.
 - Nhấp đúp vô `OpenKey.exe` để chạy chương trình.
 - Lưu ý, khi chạy chương trình lần đầu, Windows sẽ mở một hộp thoại để hỏi bạn, bấm `yes` để đồng ý OpenKey chạy với quyền `admin`
 - Xong rồi một biểu tượng chữ `V` sẽ hiện trên system tray, đúp click vô đó để mở bảng điều khiển, cấu hình những thứ bạn cần.
